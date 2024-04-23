@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_info_block_buttons",
+  "info": {
+    "displayName": "button"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string",
+      "required": true
+    },
+    "colour": {
+      "type": "enumeration",
+      "enum": [
+        "turquoise",
+        "orange",
+        "black",
+        "beige"
+      ]
+    },
+    "slug": {
+      "type": "string",
+      "required": true
+    }
+  }
+}
