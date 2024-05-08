@@ -676,6 +676,91 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
+export interface ApiBlogArticleBlogArticle extends Schema.CollectionType {
+  collectionName: 'blog_articles';
+  info: {
+    singularName: 'blog-article';
+    pluralName: 'blog-articles';
+    displayName: 'Blog Article';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    headline: Attribute.String & Attribute.Required;
+    excerpt: Attribute.Text & Attribute.Required;
+    featuredImage: Attribute.Media & Attribute.Required;
+    slug: Attribute.String & Attribute.Required & Attribute.Unique;
+    author: Attribute.String;
+    isHighlightArticle: Attribute.Boolean;
+    articleContent: Attribute.DynamicZone<
+      [
+        'blog-article.headline',
+        'blog-article.paragraph-with-image',
+        'blog-article.paragraph',
+        'blog-article.landscape-image'
+      ]
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::blog-article.blog-article',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::blog-article.blog-article',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiEventEvent extends Schema.CollectionType {
+  collectionName: 'events';
+  info: {
+    singularName: 'event';
+    pluralName: 'events';
+    displayName: 'Event';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Name: Attribute.String & Attribute.Required;
+    description: Attribute.RichText;
+    startingDate: Attribute.Date;
+    endingDate: Attribute.Date;
+    singlePrice: Attribute.Integer;
+    sharedPrice: Attribute.Integer;
+    image: Attribute.Media;
+    particapants: Attribute.Relation<
+      'api::event.event',
+      'oneToMany',
+      'api::particapant.particapant'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::event.event',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::event.event',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiInfoBlockInfoBlock extends Schema.CollectionType {
   collectionName: 'info_blocks';
   info: {
@@ -783,6 +868,73 @@ export interface ApiInfoblocksLandingInfoblocksLanding
   };
 }
 
+export interface ApiNewsletterSignupNewsletterSignup
+  extends Schema.CollectionType {
+  collectionName: 'newsletter_signups';
+  info: {
+    singularName: 'newsletter-signup';
+    pluralName: 'newsletter-signups';
+    displayName: 'Newsletter Signup';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    email: Attribute.Email & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::newsletter-signup.newsletter-signup',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::newsletter-signup.newsletter-signup',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiParticapantParticapant extends Schema.CollectionType {
+  collectionName: 'particapants';
+  info: {
+    singularName: 'particapant';
+    pluralName: 'particapants';
+    displayName: 'particapant';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    firstName: Attribute.String;
+    lastName: Attribute.String;
+    email: Attribute.Email;
+    isGeneralInterest: Attribute.Boolean & Attribute.DefaultTo<false>;
+    event: Attribute.Relation<
+      'api::particapant.particapant',
+      'manyToOne',
+      'api::event.event'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::particapant.particapant',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::particapant.particapant',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Shared {
     export interface ContentTypes {
@@ -799,9 +951,13 @@ declare module '@strapi/strapi' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
+      'api::blog-article.blog-article': ApiBlogArticleBlogArticle;
+      'api::event.event': ApiEventEvent;
       'api::info-block.info-block': ApiInfoBlockInfoBlock;
       'api::infoblocks-experience.infoblocks-experience': ApiInfoblocksExperienceInfoblocksExperience;
       'api::infoblocks-landing.infoblocks-landing': ApiInfoblocksLandingInfoblocksLanding;
+      'api::newsletter-signup.newsletter-signup': ApiNewsletterSignupNewsletterSignup;
+      'api::particapant.particapant': ApiParticapantParticapant;
     }
   }
 }
